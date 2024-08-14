@@ -1,0 +1,24 @@
+{
+  "name": "node-gateway",
+  "version": "1.0.0",
+  "description": "Node.js Server gateway, used in production environments.",
+  "main": "main.mjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node main.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HolyCorn-Software/node-gateway.git"
+  },
+  "author": "https://github.com/HolyCorn-Software/",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HolyCorn-Software/node-gateway/issues"
+  },
+  "homepage": "https://github.com/HolyCorn-Software/node-gateway#readme",
+  "dependencies": {
+    "chokidar": "^3.6.0",
+    "colors": "^1.4.0"
+  }
+}
