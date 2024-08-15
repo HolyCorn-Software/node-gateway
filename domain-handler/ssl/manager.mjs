@@ -80,8 +80,11 @@ export default class SSLManager {
             },
                 // schedule a check before 80% of the expiry, but in not more than 1 hour.
                 Math.max(
-                    ((certExpiryTime(cert) - Date.now()) * 0.8) - 25_000, // assuming that it takes at least 25s to issue another SSL certificate
-                    1 * 60 * 60 * 1000
+                    Math.min(
+                        ((certExpiryTime(cert) - Date.now()) * 0.8) - 25_000, // assuming that it takes at least 25s to issue another SSL certificate
+                        1 * 60 * 60 * 1000
+                    ),
+                    0
                 )
             )
 
