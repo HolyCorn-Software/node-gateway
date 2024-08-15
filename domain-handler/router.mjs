@@ -71,7 +71,7 @@ export default class DomainRouter {
             const path = libPath.normalize(`${this.handler.httpOverrideDir}${req.url}`)
 
             // Here, we're just trying to determine if the request is to a file located in the overriden directory
-            if ((libPath.relative(path, this.handler.httpOverrideDir)).indexOf('../') == -1) {
+            if ((libPath.relative(this.handler.httpOverrideDir, path)).indexOf('../') == -1) {
 
                 if (libFs.existsSync(path)) {
                     // If so, then let's serve it
