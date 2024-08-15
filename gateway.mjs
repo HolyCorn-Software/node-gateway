@@ -54,11 +54,16 @@ export default class NodeGateway {
             if ((path.replace(domainsPath, '').replace(this.dir, '').split('/').filter(x => x != '/')).length < 2) {
                 return;
             }
-            const domainPath = path;
-            if (this[handlers].findIndex(x => x.path != domainPath) == -1) {
 
+
+            const domainPath = path.split('/').slice(0, domainsPath.split('/').length + 1).join('/');
+            if (this[handlers].findIndex(x => x.path == domainPath) == -1) {
+
+                
                 this[handlers].push(
                     (() => {
+                        console.log(`Adding domain in path `, domainPath)
+
                         const handler = new DomainHandler({
                             path: domainPath,
                             watcher: this[watcher]
@@ -124,6 +129,8 @@ export default class NodeGateway {
             if (handler) {
                 return handler
             }
+
+
 
             socket.write(`Host${domain ? ` ${domain}` : ''} not found`, () => {
                 socket.end()
