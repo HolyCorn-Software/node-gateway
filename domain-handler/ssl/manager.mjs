@@ -68,7 +68,7 @@ export default class SSLManager {
                 await this.issueCERT()
             } catch (e) {
                 console.warn(`Could not issue certificate for ${this.handler.domain}, because\n`, e)
-                if (/too many/gi.test(`${e}`)) {
+                if (/(too many)|(can.*set attribute)/gi.test(`${e}`)) {
                     return schedule(30 * 60 * 1000) // If let's encrypt says there are too many requests, delay this one 30 mins
                 }
             }
