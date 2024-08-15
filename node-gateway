@@ -61,8 +61,8 @@ run)
     here="$(pwd)/.default_path"
     datapath="$(cat $here | head -n 1)"
     echo "datapath: $datapath, as read from $here"
-    sudo datapath=$datapath npm start;
-    exit;
+    sudo datapath=$datapath npm start
+    exit
     ;;
 
 service)
@@ -109,7 +109,7 @@ service)
 
 *)
     echo -e "Unknown option: $1
-Possible options are: service"
+Possible options are: service, run, set-path"
     exit
     ;;
 
