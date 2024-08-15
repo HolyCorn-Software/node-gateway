@@ -1,0 +1,116 @@
+#!/usr/bin/bash
+
+# Copyright 2024 HolyCorn Software
+# The node-gateway management script
+
+appName="node-gateway"
+src="$(readlink -f $BASH_SOURCE)"
+cd "$(dirname $src)"
+
+function enable_command() {
+
+    commandPath=/usr/bin/$appName
+    if [[ -f $commandPath ]]; then
+        sudo rm -f $commandPath
+    fi
+
+    sudo ln -r -s $src /usr/bin/$appName
+
+}
+
+function service_enable() {
+    # First copy the service file
+    sudo cp ./$appName.service /etc/systemd/system
+
+    #Then make this app-gateway.sh available everywhere
+    enable_command
+
+    #Then reload the systemd service list
+    sudo systemctl daemon-reload
+
+    #Now, enable the service
+    sudo systemctl enable $appName
+
+    #At this point, let's make npm, and node available to the linux system
+    nodeCmds=("npm" "node")
+    for cmd in ${nodeCmds[@]}; do
+        cmdBinPath=/usr/bin/$cmd
+        if ! [ -f $cmdBinPath ]; then
+            cmdPath=$(which $cmd)
+            sudo ln -s -r $cmdPath $cmdBinPath
+            echo "Command $cmd linked to $cmdBinPath"
+
+            # When dealing with node, let's allow it to bind to port 80
+            if [ $cmd == "node" ]; then
+                sudo setcap cap_net_bind_service='+ep' $cmdPath
+                echo "Made $cmd capable of binding to port 80"
+            fi
+        fi
+    done
+
+    echo "$appName service enabled and '$appName' command activated globally."
+}
+
+case $1 in
+
+set-path)
+    nano .default_path
+    ;;
+
+run)
+    here="$(pwd)/.default_path"
+    datapath="$(cat $here | head -n 1)"
+    echo "datapath: $datapath, as read from $here"
+    sudo datapath=$datapath npm start;
+    exit;
+    ;;
+
+service)
+
+    case $2 in
+    enable)
+        service_enable
+        ;;
+
+    start)
+        # Start the service
+        sudo systemctl daemon-reload
+        sudo systemctl enable $appName
+        sudo systemctl start $appName
+        echo "Service started."
+
+        ;;
+
+    log)
+        #Retrieving logs for the service
+        journalctl -a -u $appName -n 500 -f
+
+        ;;
+
+    stop)
+        # Stop the service
+        sudo systemctl stop $appName.service
+
+        ;;
+
+    disable)
+        # Disables the service
+        sudo systemctl disable $appName.service
+        ;;
+
+    *)
+        # Wrong command
+        echo "Please specify one of the options 'enable', 'start', 'log', 'stop', 'disable'."
+        exit
+        ;;
+
+    esac
+    ;;
+
+*)
+    echo -e "Unknown option: $1
+Possible options are: service"
+    exit
+    ;;
+
+esac

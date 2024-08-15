@@ -1,0 +1,13 @@
+
+[Unit]
+Description=node-gateway gateway by HolyCorn Software
+
+[Service]
+User=root
+ExecStart=/usr/bin/node-gateway run prod
+Restart=always
+StartLimitIntervalSec=20
+StartLimitBurst=3
+
+[Install]
+WantedBy=multi-user.target
