@@ -131,7 +131,8 @@ export default class DomainRouter {
 
             await WebsocketHandshake.outBound({
                 path: req.url,
-                socket: sockOut
+                socket: sockOut,
+                headers: req.headers
             })
 
             sockOut.pipe(sockIn);
