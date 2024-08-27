@@ -68,6 +68,10 @@ export default class DomainRouter {
 
         this[server].addListener('request', async (req, res) => {
 
+            if (req.headers.upgrade) {
+                return this[server].emit('upgrade', req, req.socket)
+            }
+
             const path = libPath.normalize(`${this.handler.httpOverrideDir}${req.url}`)
 
             // Here, we're just trying to determine if the request is to a file located in the overriden directory

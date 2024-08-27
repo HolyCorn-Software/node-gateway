@@ -59,7 +59,6 @@ export default class NodeGateway {
             const domainPath = path.split('/').slice(0, domainsPath.split('/').length + 1).join('/');
             if (this[handlers].findIndex(x => x.path == domainPath) == -1) {
 
-                
                 this[handlers].push(
                     (() => {
                         console.log(`Adding domain in path `, domainPath)
